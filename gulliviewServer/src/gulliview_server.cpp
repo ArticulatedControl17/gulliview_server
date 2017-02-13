@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 //   Pos *position = new Pos();
    gulliviewServer::Pos msg;
    ros::Publisher position_pub = n.advertise<gulliviewServer::Pos>("position", 1000);
-   ros::Rate loop_rate(10);
+   ros::Rate loop_rate(50);
 
    // Create logfile to be used
    // std::ofstream fout("GulliViewLog.txt");

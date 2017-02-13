@@ -2,6 +2,7 @@
 
 from math import sqrt
 from Queue import Queue
+import os
 
 class Point:
     def __init__(self, x , y):
@@ -10,8 +11,13 @@ class Point:
 
 
 class errorCalc:
+    def __init__(self, newPath=None):
+        if newPath is None:
+            self.path = '/path.txt'
+        else:
+            #mainly used for testing with a testMap
+            self.path = '/'+newPath
 
-    def __init__(self):
         self.queue = self.createQueuePath()
         p1= self.queue.get()
         p2= self.queue.get()
@@ -27,7 +33,12 @@ class errorCalc:
             p1=p2
             p2=self.queue.get()
 
-        return abs((p2.x - p1.x)*(p1.y-p0.y) - (p1.x-p0.x)*(p2.y-p1.y)) / (sqrt((p2.x-p1.x)*(p2.x-p1.x) + (p2.y-p1.y)*(p2.y-p1.y)))
+        isLeft = ((p2.x - p1.x)*(p0.y - p1.y) - (p2.y - p1.y)*(p0.x - p1.x)) >0 #decides if the error is to the left of centerline or not
+        value = abs((p2.x - p1.x)*(p1.y-p0.y) - (p1.x-p0.x)*(p2.y-p1.y)) / (sqrt((p2.x-p1.x)*(p2.x-p1.x) + (p2.y-p1.y)*(p2.y-p1.y)))
+        if(isLeft):
+            return -value
+        else:
+            return value
 
     def isAboveEnd (self,begin, end, p0):
         #checks if a point is passed the end point of a line.
@@ -60,7 +71,7 @@ class errorCalc:
 
     def createQueuePath(self):
         #change path to path/to/gulliviewServer/src/path.txt
-        f = open('/home/filip/Prog/edu/DATX02/catkin_ws/src/gulliviewserver/gulliviewServer/src/path.txt', 'r')
+        f = open(os.getcwd()+self.path, 'r')
         lines = [line.rstrip('\n') for line in f.readlines()]
         posL = [s.split(' ', 1 ) for s in lines]
         queue = Queue()

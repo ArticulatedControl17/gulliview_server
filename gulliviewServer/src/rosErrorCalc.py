@@ -3,9 +3,11 @@ import rospy
 from std_msgs.msg import Int64
 from gulliviewServer.msg import *
 from errorCalc import *
+import rospkg
 
 pub = rospy.Publisher('error', Int64, queue_size=10)
 ec = errorCalc()
+#ec = errorCalc(rospack.get_path('gulliviewServer')+'src/path.txt')
 
 def callback(msg):
     global pub
