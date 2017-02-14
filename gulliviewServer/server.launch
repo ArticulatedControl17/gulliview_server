@@ -1,4 +1,0 @@
-<launch>
-  <node name="error_Calculation" pkg="gulliviewServer" type="rosErrorCalc.py" />
-  <node name="gulliview" pkg="gulliviewServer" type="gulliview" />
-</launch>

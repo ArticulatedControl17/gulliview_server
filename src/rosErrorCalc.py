@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from std_msgs.msg import Int64
-from gulliviewServer.msg import *
+from gulliviewserver.msg import *
 from errorCalc import *
 import rospkg
 

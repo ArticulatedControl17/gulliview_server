@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>gulliviewServer</name>
+  <name>gulliviewserver</name>
   <version>0.0.0</version>
   <description>The gulliviewServer package</description>
 
