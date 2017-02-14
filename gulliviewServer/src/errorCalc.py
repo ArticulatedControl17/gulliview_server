@@ -30,8 +30,10 @@ class errorCalc:
         (p1,p2) = self.line
         while self.isAboveEnd(p1,p2,p0):
             self.queue.put(p1)
-            p1=p2
-            p2=self.queue.get()
+            tempP1=p2
+            tempP2=self.queue.get()
+            self.line= (tempP1,tempP2)
+            (p1,p2) = self.line
 
         isLeft = ((p2.x - p1.x)*(p0.y - p1.y) - (p2.y - p1.y)*(p0.x - p1.x)) >0 #decides if the error is to the left of centerline or not
         value = abs((p2.x - p1.x)*(p1.y-p0.y) - (p1.x-p0.x)*(p2.y-p1.y)) / (sqrt((p2.x-p1.x)*(p2.x-p1.x) + (p2.y-p1.y)*(p2.y-p1.y)))
@@ -71,7 +73,8 @@ class errorCalc:
 
     def createQueuePath(self):
         #change path to path/to/gulliviewServer/src/path.txt
-        f = open(os.getcwd()+self.path, 'r')
+        dirpath = os.path.dirname(os.path.abspath(__file__))
+        f = open(dirpath+self.path, 'r')
         lines = [line.rstrip('\n') for line in f.readlines()]
         posL = [s.split(' ', 1 ) for s in lines]
         queue = Queue()
