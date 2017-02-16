@@ -25,7 +25,6 @@ class errorCalc:
         self.queue.put(p2)
         self.line = (p1,p2)
 
-
     def calculateError(self, p0):
         (p1,p2) = self.line
         while self.isAboveEnd(p1,p2,p0):
