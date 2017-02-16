@@ -36,6 +36,14 @@ class errorCalc:
 
         isLeft = ((p2.x - p1.x)*(p0.y - p1.y) - (p2.y - p1.y)*(p0.x - p1.x)) >0 #decides if the error is to the left of centerline or not
         value = abs((p2.x - p1.x)*(p1.y-p0.y) - (p1.x-p0.x)*(p2.y-p1.y)) / (sqrt((p2.x-p1.x)*(p2.x-p1.x) + (p2.y-p1.y)*(p2.y-p1.y)))
+        if (value > 1000):
+            #reset queue, mainly for debugging
+            self.queue = self.createQueuePath()
+            p1= self.queue.get()
+            p2= self.queue.get()
+            self.queue.put(p1)
+            self.queue.put(p2)
+            self.line = (p1,p2)
         if(isLeft):
             return -value
         else:

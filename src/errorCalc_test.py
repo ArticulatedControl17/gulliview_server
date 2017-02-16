@@ -1,58 +1,213 @@
 import unittest
 from errorCalc import *
 
-mod = errorCalc('testPath.txt')
-
 class TestOneLapCounterClockWise(unittest.TestCase):
 
-#900 2764
-#900 7917
-#1015 8375
-#1246 8690
-#1442 8856
-#1923 8992
-#2837 8992
+
+    def test_up_strait_point_to_right(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(105,50)
+        self.assertEqual(mod.calculateError(p0), 5)
+    def test_up_strait_point_to_left(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(95,60)
+        self.assertEqual(mod.calculateError(p0), -5)
+
+    def test_left_up_point_to_right(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(100,90)
+        self.assertTrue(mod.calculateError(p0)< 2.8 and mod.calculateError(p0)> 2.7)
+    def test_left_up_point_to_left(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(90,90)
+        self.assertTrue(mod.calculateError(p0)< -5.5 and mod.calculateError(p0)> -5.6)
 
 
-    global mod
+    def test_left_strait_point_to_right(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(95,100)
+        mod.calculateError(p0)
+        p0 = Point(50,105)
+        self.assertEqual(mod.calculateError(p0), 5)
+    def test_left_strait_point_to_left(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(95,100)
+        mod.calculateError(p0)
+        p0 = Point(50,95)
+        self.assertEqual(mod.calculateError(p0), -5)
 
-    def test_up_strait(self):
-        print mod.calculateError(Point(900,5000))
-        #self.assertTrue(mod.calculateError(Point(900,5000))>-10)
-        print mod.calculateError(Point(900,8000))
-        print mod.calculateError(Point(900,7900))
-        print mod.calculateError(Point(1015,8400))
-        #self.assertTrue(mod.calculateError(Point(900,8000))>-100)
-    def test_up_left(self):
-        self.assertTrue(True)
+    def test_left_down_point_to_right(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(95,100)
+        mod.calculateError(p0)
+        p0 = Point(50,95)
+        mod.calculateError(p0)
+        p0 = Point(30,100)
+        self.assertEqual(mod.calculateError(p0), 6)
+    def test_left_down_point_to_left(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(95,100)
+        mod.calculateError(p0)
+        p0 = Point(50,95)
+        mod.calculateError(p0)
+        p0 = Point(30,85)
+        self.assertEqual(mod.calculateError(p0), -6)
 
-    def test_left_strait(self):
-        self.assertTrue(True)
 
-    def test_left_down(self):
-        self.assertTrue(True)
+    def test_down_strait_point_to_right(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(95,100)
+        mod.calculateError(p0)
+        p0 = Point(50,95)
+        mod.calculateError(p0)
+        p0 = Point(30,100)
+        mod.calculateError(p0)
+        p0 = Point(15,50)
+        self.assertEqual(mod.calculateError(p0), 5)
+    def test_down_strait_point_to_left(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(95,100)
+        mod.calculateError(p0)
+        p0 = Point(50,95)
+        mod.calculateError(p0)
+        p0 = Point(30,100)
+        mod.calculateError(p0)
+        p0 = Point(25,50)
+        self.assertEqual(mod.calculateError(p0), -5)
 
-    def test_down_strait(self):
-        self.assertTrue(True)
+    def test_down_right_point_to_right(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(95,100)
+        mod.calculateError(p0)
+        p0 = Point(50,95)
+        mod.calculateError(p0)
+        p0 = Point(30,100)
+        mod.calculateError(p0)
+        p0 = Point(25,50)
+        mod.calculateError(p0)
+        p0 = Point(20,30)
+        self.assertEqual(mod.calculateError(p0), 4)
+    def test_down_right_point_to_left(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(95,100)
+        mod.calculateError(p0)
+        p0 = Point(50,95)
+        mod.calculateError(p0)
+        p0 = Point(30,100)
+        mod.calculateError(p0)
+        p0 = Point(25,50)
+        mod.calculateError(p0)
+        p0 = Point(40,30)
+        self.assertEqual(mod.calculateError(p0), -8)
 
-    def test_down_right(self):
-        self.assertTrue(True)
+    def test_right_strait_point_to_right(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(95,100)
+        mod.calculateError(p0)
+        p0 = Point(50,95)
+        mod.calculateError(p0)
+        p0 = Point(30,100)
+        mod.calculateError(p0)
+        p0 = Point(25,50)
+        mod.calculateError(p0)
+        p0 = Point(20,30)
+        mod.calculateError(p0)
+        p0 = Point(60,15)
+        self.assertEqual(mod.calculateError(p0), 5)
+    def test_right_strait_point_to_left(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(95,100)
+        mod.calculateError(p0)
+        p0 = Point(50,95)
+        mod.calculateError(p0)
+        p0 = Point(30,100)
+        mod.calculateError(p0)
+        p0 = Point(25,50)
+        mod.calculateError(p0)
+        p0 = Point(60,25)
+        self.assertEqual(mod.calculateError(p0), -5)
 
-    def test_right_strait(self):
-        self.assertTrue(True)
-
-    def test_right_up(self):
-        self.assertTrue(True)
+    def test_right_up_point_to_right(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(95,100)
+        mod.calculateError(p0)
+        p0 = Point(50,95)
+        mod.calculateError(p0)
+        p0 = Point(30,100)
+        mod.calculateError(p0)
+        p0 = Point(25,50)
+        mod.calculateError(p0)
+        p0 = Point(20,30)
+        mod.calculateError(p0)
+        p0 = Point(60,15)
+        mod.calculateError(p0)
+        p0 = Point(100,25)
+        self.assertTrue(mod.calculateError(p0)< 5.6 and mod.calculateError(p0)> 5.5)
+    def test_right_up_point_to_left(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(95,100)
+        mod.calculateError(p0)
+        p0 = Point(50,95)
+        mod.calculateError(p0)
+        p0 = Point(30,100)
+        mod.calculateError(p0)
+        p0 = Point(25,50)
+        mod.calculateError(p0)
+        p0 = Point(20,30)
+        mod.calculateError(p0)
+        p0 = Point(60,15)
+        mod.calculateError(p0)
+        p0 = Point(95,30)
+        self.assertTrue(mod.calculateError(p0)> -1.4 and mod.calculateError(p0)< -1.3)
 
     def test_up_strait_one_lap(self):
-        self.assertTrue(True)
+        mod = errorCalc('testpath.txt')
+        p0 = Point(95,100)
+        mod.calculateError(p0)
+        p0 = Point(50,95)
+        mod.calculateError(p0)
+        p0 = Point(30,100)
+        mod.calculateError(p0)
+        p0 = Point(25,50)
+        mod.calculateError(p0)
+        p0 = Point(20,30)
+        mod.calculateError(p0)
+        p0 = Point(60,15)
+        mod.calculateError(p0)
+        p0 = Point(100,25)
+        mod.calculateError(p0)
+        p0 = Point(105,50)
+        self.assertEqual(mod.calculateError(p0), 5)
+    def test_up_strait_one_lap(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(95,100)
+        mod.calculateError(p0)
+        p0 = Point(50,95)
+        mod.calculateError(p0)
+        p0 = Point(30,100)
+        mod.calculateError(p0)
+        p0 = Point(25,50)
+        mod.calculateError(p0)
+        p0 = Point(20,30)
+        mod.calculateError(p0)
+        p0 = Point(60,15)
+        mod.calculateError(p0)
+        p0 = Point(100,25)
+        mod.calculateError(p0)
+        p0 = Point(95,50)
+        self.assertEqual(mod.calculateError(p0), -5)
 
-    #def test_split(self):
-    #    s = 'hello world'
-    #    self.assertEqual(s.split(), ['hello', 'world'])
-    #    # check that s.split fails when the separator is not a string
-    #    with self.assertRaises(TypeError):
-    #        s.split(2)
+class PathRecet (unittest.TestCase):
+    def test_up_strait_point_to_right(self):
+        mod = errorCalc('testpath.txt')
+        p0 = Point(105,50)
+        self.assertEqual(mod.calculateError(p0), 5)
+        p0 = Point(90, 100)
+        self.assertEqual(mod.calculateError(p0), 0)
+        p0 = Point(2000, 2000)
+        self.assertTrue(mod.calculateError(p0)> 1000)
+        p0 = Point(105,50)
+        self.assertEqual(mod.calculateError(p0), 5)
 
 if __name__ == '__main__':
     unittest.main()
