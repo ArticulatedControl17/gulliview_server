@@ -1,5 +1,5 @@
 import unittest
-from errorCalc import *
+from error_calc import *
 
 class TestOneLapCounterClockWise(unittest.TestCase):
 

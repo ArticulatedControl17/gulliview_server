@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(gulliviewserver)
+project(gulliview_server)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -196,5 +196,5 @@ include_directories(
 #    link_directories(${Boost_LIBRARY_DIR})
 #endif()
 
-add_executable(gulliview src/gulliview_server.cpp)
+add_executable(gulliview scripts/gulliview_server.cpp)
 target_link_libraries(gulliview ${catkin_LIBRARIES})

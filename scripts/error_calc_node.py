@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import rospy
 from std_msgs.msg import Int64
-from gulliviewserver.msg import *
-from errorCalc import *
+from gulliview_server.msg import *
+from error_calc import *
 import rospkg
 
 pub = rospy.Publisher('error', Int64, queue_size=10)
@@ -63,7 +63,7 @@ def callback(msg):
 
 
 def listener():
-    rospy.init_node('errorCalc', anonymous=True)
+    rospy.init_node('error_calc_node', anonymous=True)
     rospy.Subscriber('position', Pos, callback)
     rospy.spin()
 
