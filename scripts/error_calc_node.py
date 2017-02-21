@@ -15,6 +15,7 @@ errorDifference = 0
 lookforToError = False
 iteration = 0
 updateTime = 0
+prevError = 0
 
 def callback(msg):
     global pub
@@ -27,11 +28,12 @@ def callback(msg):
     global iteration
     global lookforToError
     global updateTime
-
+    global prevError
     if (msg.x2==0 and msg.y2==0 and msg.cameraid2==0 and msg.tagid2==0):
+        print "ONE MESSAGE ZERO*************"
         #only one tag out
         cameraid= msg.cameraid1
-        error = -100000
+        error = prevError
     else:
         #two tags
         #front == id 2
@@ -40,11 +42,12 @@ def callback(msg):
             #nr 1 is back and nr 2 is front
             cameraid=msg.cameraid2
             error = ec.calculateError((msg.x1,msg.y1), (msg.x2,msg.y2))
+            prevError = error
         else:
             #nr 2 is back and nr 1 is front
             cameraid=msg.cameraid1
             error = ec.calculateError((msg.x2,msg.y2), (msg.x1,msg.y1))
-
+            prevError=error
     #look for common camera coverage areas:
 
     if(lookforToError and currentCam != cameraid):
@@ -72,8 +75,8 @@ def callback(msg):
 
         # publishing only one camera
         error = error  -errorDifference*iteration
-        rospy.loginfo("error is: %s", error)
-        rospy.loginfo(rospy.get_caller_id() + "I heard x1: %s and y1: %s, and cameraid1: %s, tagid1: %s" , msg.x1, msg.y1,cameraid, msg.tagid1)
+        #rospy.loginfo("error is: %s", error)
+        #rospy.loginfo(rospy.get_caller_id() + "I heard x1: %s and y1: %s, and cameraid1: %s, tagid1: %s" , msg.x1, msg.y1,cameraid, msg.tagid1)
         pub.publish(error)
 
 

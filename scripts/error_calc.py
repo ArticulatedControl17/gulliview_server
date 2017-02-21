@@ -28,7 +28,7 @@ class errorCalc:
     def calculateError(self, (backp0x, backp0y), (frontp0x, frontp0y)):
         print "points: ",backp0x, backp0y , frontp0x, frontp0y
 
-        lookahead = 200
+        lookahead = 600
 
         #if backp0x -frontp0x ==0:
         #    #avoid division by 0
