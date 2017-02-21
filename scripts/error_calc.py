@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from math import sqrt
+from math import *
 from Queue import Queue
 import os
 
@@ -25,7 +25,35 @@ class errorCalc:
         self.queue.put(p2)
         self.line = (p1,p2)
 
-    def calculateError(self, p0):
+    def calculateError(self, (backp0x, backp0y), (frontp0x, frontp0y)):
+        print "points: ",backp0x, backp0y , frontp0x, frontp0y
+
+        lookahead = 200
+
+        #if backp0x -frontp0x ==0:
+        #    #avoid division by 0
+        #    if backp0x > frontp0x:
+        #        #driving left
+        #        theta = pi
+        #    else:
+        #        #driving right
+        #        theta = 0
+        #else:
+        #    theta = atan((frontp0y - backp0y)/(frontp0x - backp0x))
+
+        #distance = sqrt((frontp0y - backp0y)**2 + (frontp0x - backp0x)**2 )
+        #x = (distance + lookahead) * cos(theta) + backp0x
+        #y = (distance + lookahead) * sin(theta) + backp0y
+
+        prevV =(frontp0x - backp0x , frontp0y - backp0y)
+        mag = sqrt((frontp0x - backp0x)**2 + (frontp0y - backp0y)**2)
+        nPrevV = tuple( comp/mag for comp in prevV )
+        (x,y) = tuple(comp*lookahead for comp in nPrevV) #the vector from prevToPoint to newPoint
+        x= x+frontp0x
+        y= y+frontp0y
+        print "forward x and y: ", x,y
+
+        p0 = Point(x,y)
         (p1,p2) = self.line
         while self.isAboveEnd(p1,p2,p0):
             self.queue.put(p1)

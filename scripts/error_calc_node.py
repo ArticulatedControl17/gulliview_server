@@ -15,6 +15,8 @@ errorDifference = 0
 lookforToError = False
 iteration = 0
 updateTime = 0
+tag1Pos= (-1,-1)
+tag2Pos = (-1,-1)
 
 def callback(msg):
     global pub
@@ -27,19 +29,29 @@ def callback(msg):
     global iteration
     global lookforToError
     global updateTime
-    p0 = Point(msg.x, msg.y)
-    error = ec.calculateError(p0)
+    global tag1Pos
+    global tag2Pos
+
+    if msg.tagid == 1:
+        tag1Pos = (msg.x,msg.y)
+    if msg.tagid == 2:
+        tag2Pos = (msg.x,msg.y)
+
+    if tag1Pos>=0 and tag2Pos>=0:
+        error = ec.calculateError(tag1Pos, tag2Pos)
+    else:
+        error = 0
 
     #look for common camera coverage areas:
 
-    if(lookforToError and currentCam != msg.heading):
+    if(lookforToError and currentCam != msg.cameraid):
         #calculte camera adjumstment difference
         errorDifference = (fromError - error)/30
         lookforToError=False
 
-    if(msg.heading!=currentCam and timeoutCam==False):
+    if(msg.cameraid!=currentCam and timeoutCam==False):
         #found new camera
-        currentCam= msg.heading
+        currentCam= msg.cameraid
         timeoutCam= True
         timeoutTime = rospy.get_time()+ rospy.Duration(3, 0).to_sec()
         updateTime = rospy.get_time()+ rospy.Duration(0.1, 0).to_sec()
@@ -49,7 +61,7 @@ def callback(msg):
     if(rospy.get_time() > timeoutTime):
         #three seconds pass, should not  be in area where 2 cameras look
         timeoutCam = False
-    if(msg.heading==currentCam):
+    if(msg.cameraid==currentCam):
         if(timeoutCam and rospy.get_time() > updateTime):
             #calculate camera adjustment difference one time step
             updateTime = rospy.get_time()+ rospy.Duration(0.1, 0).to_sec()
@@ -58,7 +70,7 @@ def callback(msg):
         # publishing only one camera
         error = error  -errorDifference*iteration
         rospy.loginfo("error is: %s", error)
-        rospy.loginfo(rospy.get_caller_id() + "I heard x: %s and y: %s, and heading: %s", msg.x, msg.y, msg.heading)
+        rospy.loginfo(rospy.get_caller_id() + "I heard x: %s and y: %s, and cameraid: %s, tagid: %s" , msg.x, msg.y, msg.cameraid, msg.tagid)
         pub.publish(error)
 
 
@@ -74,4 +86,4 @@ if __name__ == '__main__':
 #Command for manually publishing in terminal
 #rostopic pub -1 /position gulliviewServer/Pos "x: 60
 #y: 20
-#heading: 0"
+#cameraid: 0"
