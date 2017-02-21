@@ -73,19 +73,39 @@ int main(int argc, char **argv)
             index += 16;
             uint32_t len     = recv_buf[28] << 24 | recv_buf[29] << 16 | recv_buf[30] << 8 | recv_buf[31];
             std::cout << "seq " << seq << " len " << len << std::endl;
+            int32_t nid =0;
+            int32_t nx =0;
+            int32_t ny =0;
+            int32_t nt =0;
+            int32_t id = 0;
+            int32_t x = 0;
+            int32_t y = 0;
+            int32_t t = 0;
             for (size_t i = 0; i < len; ++i) {
-               int32_t id= recv_buf[32] << 24 | recv_buf[33] << 16 | recv_buf[34] << 8 | recv_buf[35];
-               int32_t x = recv_buf[36] << 24 | recv_buf[37] << 16 | recv_buf[38] << 8 | recv_buf[39];
-               int32_t y = recv_buf[40] << 24 | recv_buf[41] << 16 | recv_buf[42] << 8 | recv_buf[43];
-               int32_t t = recv_buf[44] << 24 | recv_buf[45] << 16 | recv_buf[46] << 8 | recv_buf[47];
+               if(i==0){
+                 id= recv_buf[32] << 24 | recv_buf[33] << 16 | recv_buf[34] << 8 | recv_buf[35];
+                 x = recv_buf[36] << 24 | recv_buf[37] << 16 | recv_buf[38] << 8 | recv_buf[39];
+                 y = recv_buf[40] << 24 | recv_buf[41] << 16 | recv_buf[42] << 8 | recv_buf[43];
+                 t = recv_buf[44] << 24 | recv_buf[45] << 16 | recv_buf[46] << 8 | recv_buf[47];
+               }else{
+                 nid= recv_buf[48] << 24 | recv_buf[49] << 16 | recv_buf[50] << 8 | recv_buf[51];
+                 nx = recv_buf[52] << 24 | recv_buf[53] << 16 | recv_buf[54] << 8 | recv_buf[55];
+                 ny = recv_buf[56] << 24 | recv_buf[57] << 16 | recv_buf[58] << 8 | recv_buf[59];
+                 nt = recv_buf[60] << 24 | recv_buf[61] << 16 | recv_buf[62] << 8 | recv_buf[63];
+
+               }
                answer = recv_buf;
-               msg.x = x;
-               msg.y = y;
-               msg.cameraid = t;
-               msg.tagid = id;
-               std::cout << "tagid: " << msg.tagid;
+               msg.x1 = x;
+               msg.y1 = y;
+               msg.cameraid1 = t;
+               msg.tagid1 = id;
+               msg.x2 = nx;
+               msg.y2 = ny;
+               msg.cameraid2 = nt;
+               msg.tagid2 = nid;
+               //std::cout << "tagid: " << msg.tagid;
                position_pub.publish(msg);
-               //std::cout << "Tag: " << id << " x: " << x << " y: " << y << " heading: " << t << std::endl;
+               std::cout << "Tag: " << id << " x: " << x << " y: " << y << " heading: " << t << std::endl;
             }
             //Data request from the Gulliver map client
          } else if (type == 1 and sub_type == 1) { //TODO: Correct types

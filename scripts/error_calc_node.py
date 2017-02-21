@@ -15,8 +15,6 @@ errorDifference = 0
 lookforToError = False
 iteration = 0
 updateTime = 0
-tag1Pos= (-1,-1)
-tag2Pos = (-1,-1)
 
 def callback(msg):
     global pub
@@ -29,29 +27,34 @@ def callback(msg):
     global iteration
     global lookforToError
     global updateTime
-    global tag1Pos
-    global tag2Pos
 
-    if msg.tagid == 1:
-        tag1Pos = (msg.x,msg.y)
-    if msg.tagid == 2:
-        tag2Pos = (msg.x,msg.y)
-
-    if tag1Pos>=0 and tag2Pos>=0:
-        error = ec.calculateError(tag1Pos, tag2Pos)
+    if (msg.x2==0 and msg.y2==0 and msg.cameraid2==0 and msg.tagid2==0):
+        #only one tag out
+        cameraid= msg.cameraid1
+        error = -100000
     else:
-        error = 0
+        #two tags
+        #front == id 2
+        #back == id 1
+        if msg.tagid1 ==1:
+            #nr 1 is back and nr 2 is front
+            cameraid=msg.cameraid2
+            error = ec.calculateError((msg.x1,msg.y1), (msg.x2,msg.y2))
+        else:
+            #nr 2 is back and nr 1 is front
+            cameraid=msg.cameraid1
+            error = ec.calculateError((msg.x2,msg.y2), (msg.x1,msg.y1))
 
     #look for common camera coverage areas:
 
-    if(lookforToError and currentCam != msg.cameraid):
+    if(lookforToError and currentCam != cameraid):
         #calculte camera adjumstment difference
         errorDifference = (fromError - error)/30
         lookforToError=False
 
-    if(msg.cameraid!=currentCam and timeoutCam==False):
+    if(cameraid!=currentCam and timeoutCam==False):
         #found new camera
-        currentCam= msg.cameraid
+        currentCam= cameraid
         timeoutCam= True
         timeoutTime = rospy.get_time()+ rospy.Duration(3, 0).to_sec()
         updateTime = rospy.get_time()+ rospy.Duration(0.1, 0).to_sec()
@@ -61,7 +64,7 @@ def callback(msg):
     if(rospy.get_time() > timeoutTime):
         #three seconds pass, should not  be in area where 2 cameras look
         timeoutCam = False
-    if(msg.cameraid==currentCam):
+    if(cameraid==currentCam):
         if(timeoutCam and rospy.get_time() > updateTime):
             #calculate camera adjustment difference one time step
             updateTime = rospy.get_time()+ rospy.Duration(0.1, 0).to_sec()
@@ -70,7 +73,7 @@ def callback(msg):
         # publishing only one camera
         error = error  -errorDifference*iteration
         rospy.loginfo("error is: %s", error)
-        rospy.loginfo(rospy.get_caller_id() + "I heard x: %s and y: %s, and cameraid: %s, tagid: %s" , msg.x, msg.y, msg.cameraid, msg.tagid)
+        rospy.loginfo(rospy.get_caller_id() + "I heard x1: %s and y1: %s, and cameraid1: %s, tagid1: %s" , msg.x1, msg.y1,cameraid, msg.tagid1)
         pub.publish(error)
 
 
