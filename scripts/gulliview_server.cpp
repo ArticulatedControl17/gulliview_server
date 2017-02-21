@@ -24,7 +24,7 @@
 //#include <fstream>
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "ros/ros.h"
-#include "gulliviewserver/Pos.h"
+#include "gulliview_server/Pos.h"
 //#include "CameraUtil.h"
 
 
@@ -41,8 +41,8 @@ int main(int argc, char **argv)
 
    // init pos
 //   Pos *position = new Pos();
-   gulliviewserver::Pos msg;
-   ros::Publisher position_pub = n.advertise<gulliviewserver::Pos>("position", 1000);
+   gulliview_server::Pos msg;
+   ros::Publisher position_pub = n.advertise<gulliview_server::Pos>("position", 1000);
    ros::Rate loop_rate(50);
 
    // Create logfile to be used
