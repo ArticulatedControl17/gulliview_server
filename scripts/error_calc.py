@@ -73,9 +73,9 @@ class errorCalc:
             self.queue.put(p2)
             self.line = (p1,p2)
         if(isLeft):
-            return -value
-        else:
             return value
+        else:
+            return -value
 
     def isAboveEnd (self,begin, end, p0):
         #checks if a point is passed the end point of a line.
