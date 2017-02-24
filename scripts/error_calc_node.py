@@ -7,26 +7,18 @@ import rospkg
 
 pub = rospy.Publisher('error', Int64, queue_size=10)
 ec = errorCalc()
-currentCam = -1
-timeoutCam = False
-timeoutTime= -1
-fromError = 0
-errorDifference = 0
-lookforToError = False
-iteration = 0
-updateTime = 0
+frontCamera = -1
+backCamera = -1
+camera = -1
+nextCamera = -1
+first = True
 
 def callback(msg):
     global pub
     global ec
-    global currentCam
-    global timeoutCam
-    global timeoutTime
-    global fromError
-    global errorDifference
-    global iteration
-    global lookforToError
-    global updateTime
+    global camera
+    global nextCamera
+    global first
 
     if (msg.x2==0 and msg.y2==0 and msg.cameraid2==0 and msg.tagid2==0):
         #only one tag out
@@ -47,34 +39,38 @@ def callback(msg):
 
     #look for common camera coverage areas:
 
-    if(lookforToError and currentCam != cameraid):
-        #calculte camera adjumstment difference
-        errorDifference = (fromError - error)/30
-        lookforToError=False
+    if first:
+        #TODO: be able to start in common areas
+        #initiate
+        camera= msg.tagid1
 
-    if(cameraid!=currentCam and timeoutCam==False):
-        #found new camera
-        currentCam= cameraid
-        timeoutCam= True
-        timeoutTime = rospy.get_time()+ rospy.Duration(3, 0).to_sec()
-        updateTime = rospy.get_time()+ rospy.Duration(0.1, 0).to_sec()
-        iteration = 1
-        fromError = error
-        lookforToError = True
-    if(rospy.get_time() > timeoutTime):
-        #three seconds pass, should not  be in area where 2 cameras look
-        timeoutCam = False
-    if(cameraid==currentCam):
-        if(timeoutCam and rospy.get_time() > updateTime):
-            #calculate camera adjustment difference one time step
-            updateTime = rospy.get_time()+ rospy.Duration(0.1, 0).to_sec()
-            iteration= iteration+1
+    #define front and back tags
+    if (msg.tagid1 == 2):
+        front = (msg.x1, msg.y1, msg.camid1)
+        back = (msg.x2, msg.y2, msg.camid2)
+    else:
+        back = (msg.x1, msg.y1, msg.camid1)
+        front = (msg.x2, msg.y2, msg.camid2)
 
-        # publishing only one camera
-        error = error  -errorDifference*iteration
+    if(not msg.cameraid1 == msg.cameraid2 and not commonArea):
+        #entering common area
+        camera = back[2]
+        nextCamera = front[2]
+        commonArea = True
+
+    if(not msg.cameraid1 == msg.cameraid2 and commonArea):
+        #leaving common area
+        camera = nextCamera
+        commonArea = False
+
+    if msg.cameraid1==camera and msg.cameraid2==camera:
         rospy.loginfo("error is: %s", error)
         rospy.loginfo(rospy.get_caller_id() + "I heard x1: %s and y1: %s, and cameraid1: %s, tagid1: %s" , msg.x1, msg.y1,cameraid, msg.tagid1)
+        oldError = error
         pub.publish(error)
+    else: #wrong camera
+        print "Fel camera, should happen every second time"
+        #pub.publish(oldError)
 
 
 def listener():
