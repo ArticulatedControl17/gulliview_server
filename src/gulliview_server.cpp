@@ -104,9 +104,9 @@ int main(int argc, char **argv)
                msg.cameraid2 = nt;
                msg.tagid2 = nid;
                //std::cout << "tagid: " << msg.tagid;
-               position_pub.publish(msg);
                std::cout << "Tag: " << id << " x: " << x << " y: " << y << " heading: " << t << std::endl;
             }
+            position_pub.publish(msg);
             //Data request from the Gulliver map client
          } else if (type == 1 and sub_type == 1) { //TODO: Correct types
              //Set the type to the response type

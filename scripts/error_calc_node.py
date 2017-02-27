@@ -7,11 +7,11 @@ import rospkg
 
 pub = rospy.Publisher('error', Int64, queue_size=10)
 ec = errorCalc()
-frontCamera = -1
-backCamera = -1
 camera = -1
 nextCamera = -1
 first = True
+commonArea = False
+
 
 def callback(msg):
     global pub
@@ -19,11 +19,15 @@ def callback(msg):
     global camera
     global nextCamera
     global first
+    global commonArea
+
+    print camera
 
     if (msg.x2==0 and msg.y2==0 and msg.cameraid2==0 and msg.tagid2==0):
+        print "ONE MESSAGE ZERO*************"
         #only one tag out
         cameraid= msg.cameraid1
-        error = -100000
+        error = prevError
     else:
         #two tags
         #front == id 2
@@ -32,25 +36,28 @@ def callback(msg):
             #nr 1 is back and nr 2 is front
             cameraid=msg.cameraid2
             error = ec.calculateError((msg.x1,msg.y1), (msg.x2,msg.y2))
+            prevError = error
         else:
             #nr 2 is back and nr 1 is front
             cameraid=msg.cameraid1
             error = ec.calculateError((msg.x2,msg.y2), (msg.x1,msg.y1))
-
+            prevError=error
     #look for common camera coverage areas:
+
+    #define front and back tags
+    if (msg.tagid1 == 2):
+        front = (msg.x1, msg.y1, msg.cameraid1)
+        back = (msg.x2, msg.y2, msg.cameraid2)
+    else:
+        back = (msg.x1, msg.y1, msg.cameraid1)
+        front = (msg.x2, msg.y2, msg.cameraid2)
 
     if first:
         #TODO: be able to start in common areas
         #initiate
-        camera= msg.tagid1
+        camera= back[2]
+        first=False
 
-    #define front and back tags
-    if (msg.tagid1 == 2):
-        front = (msg.x1, msg.y1, msg.camid1)
-        back = (msg.x2, msg.y2, msg.camid2)
-    else:
-        back = (msg.x1, msg.y1, msg.camid1)
-        front = (msg.x2, msg.y2, msg.camid2)
 
     if(not msg.cameraid1 == msg.cameraid2 and not commonArea):
         #entering common area
@@ -58,7 +65,8 @@ def callback(msg):
         nextCamera = front[2]
         commonArea = True
 
-    if(not msg.cameraid1 == msg.cameraid2 and commonArea):
+    if(back[2]==nextCamera and commonArea):
+        print "leaving ***********************************************"
         #leaving common area
         camera = nextCamera
         commonArea = False
@@ -67,7 +75,6 @@ def callback(msg):
         rospy.loginfo("error is: %s", error)
         rospy.loginfo(rospy.get_caller_id() + "I heard x1: %s and y1: %s, and cameraid1: %s, tagid1: %s" , msg.x1, msg.y1,cameraid, msg.tagid1)
         oldError = error
-        pub.publish(error)
     else: #wrong camera
         print "Fel camera, should happen every second time"
         #pub.publish(oldError)
