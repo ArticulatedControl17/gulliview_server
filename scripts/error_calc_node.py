@@ -11,7 +11,8 @@ camera = -1
 nextCamera = -1
 first = True
 commonArea = False
-
+prevFront = {}
+prevBack = {}
 
 def callback(msg):
     global pub
@@ -20,6 +21,8 @@ def callback(msg):
     global nextCamera
     global first
     global commonArea
+    global prevFront
+    global prevBack
 
     print camera
 
@@ -35,12 +38,12 @@ def callback(msg):
         if msg.tagid1 ==1:
             #nr 1 is back and nr 2 is front
             cameraid=msg.cameraid2
-            error = ec.calculateError((msg.x1,msg.y1), (msg.x2,msg.y2))
+            error = ec.calculateError((msg.x1,msg.y1), (msg.x2,msg.y2), 0)
             prevError = error
         else:
             #nr 2 is back and nr 1 is front
             cameraid=msg.cameraid1
-            error = ec.calculateError((msg.x2,msg.y2), (msg.x1,msg.y1))
+            error = ec.calculateError((msg.x2,msg.y2), (msg.x1,msg.y1), 0)
             prevError=error
     #look for common camera coverage areas:
 
@@ -72,12 +75,21 @@ def callback(msg):
         commonArea = False
 
     if msg.cameraid1==camera and msg.cameraid2==camera:
+        prevBack = back
+        prevFront = front
         rospy.loginfo("error is: %s", error)
         rospy.loginfo(rospy.get_caller_id() + "I heard x1: %s and y1: %s, and cameraid1: %s, tagid1: %s" , msg.x1, msg.y1,cameraid, msg.tagid1)
-        oldError = error
+        pub.publish(error)
     else: #wrong camera
         print "Fel camera, should happen every second time"
-        #pub.publish(oldError)
+        if commonArea:
+            #calculate with previous point, increase lookahead
+            error = ec.calculateError(prevBack[0],prevBack[1],back[0], back[1], 15)
+            rospy.loginfo("error is: %s", error)
+            pub.publish(error)
+        if not commonArea:
+            pass
+
 
 
 def listener():

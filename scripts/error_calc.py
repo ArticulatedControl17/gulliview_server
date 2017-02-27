@@ -25,10 +25,10 @@ class errorCalc:
         self.queue.put(p2)
         self.line = (p1,p2)
 
-    def calculateError(self, (backp0x, backp0y), (frontp0x, frontp0y)):
+    def calculateError(self, (backp0x, backp0y), (frontp0x, frontp0y), la):
         print "points: ",backp0x, backp0y , frontp0x, frontp0y
 
-        lookahead = 350
+        lookahead = 350 +la
 
         #if backp0x -frontp0x ==0:
         #    #avoid division by 0
