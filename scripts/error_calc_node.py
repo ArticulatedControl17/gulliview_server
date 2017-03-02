@@ -52,15 +52,15 @@ def callback(msg):
 
     if(lookforToError and currentCam != cameraid):
         #calculte camera adjumstment difference
-        errorDifference = (fromError - error)/30
+        errorDifference = (fromError - error)/40
         lookforToError=False
 
     if(cameraid!=currentCam and timeoutCam==False):
         #found new camera
         currentCam= cameraid
         timeoutCam= True
-        timeoutTime = rospy.get_time()+ rospy.Duration(3, 0).to_sec()
-        updateTime = rospy.get_time()+ rospy.Duration(0.1, 0).to_sec()
+        timeoutTime = rospy.get_time()+ rospy.Duration(1, 0).to_sec()
+        updateTime = rospy.get_time()+ rospy.Duration(0.025, 0).to_sec()
         iteration = 1
         fromError = error
         lookforToError = True
@@ -70,7 +70,7 @@ def callback(msg):
     if(cameraid==currentCam):
         if(timeoutCam and rospy.get_time() > updateTime):
             #calculate camera adjustment difference one time step
-            updateTime = rospy.get_time()+ rospy.Duration(0.1, 0).to_sec()
+            updateTime = rospy.get_time()+ rospy.Duration(0.025, 0).to_sec()
             iteration= iteration+1
 
         # publishing only one camera
