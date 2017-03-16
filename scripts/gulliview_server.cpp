@@ -24,7 +24,7 @@
 //#include <fstream>
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "ros/ros.h"
-#include "gulliview_server/Pos.h"
+#include "custom_msgs/GulliViewPositions.h"
 //#include "CameraUtil.h"
 
 
@@ -41,8 +41,8 @@ int main(int argc, char **argv)
 
    // init pos
 //   Pos *position = new Pos();
-   gulliview_server::Pos msg;
-   ros::Publisher position_pub = n.advertise<gulliview_server::Pos>("position", 1000);
+   custom_msgs::GulliViewPositions msg;
+   ros::Publisher position_pub = n.advertise<custom_msgs::GulliViewPositions>("gv_positions", 1000);
    ros::Rate loop_rate(50);
 
    // Create logfile to be used
@@ -95,13 +95,12 @@ int main(int argc, char **argv)
 
                }
                answer = recv_buf;
-               msg.x1 = x;
-               msg.y1 = y;
-               msg.cameraid1 = t;
+               msg.p1.x = x;
+               msg.p1.y = y;
+               msg.cameraid = t;
                msg.tagid1 = id;
-               msg.x2 = nx;
-               msg.y2 = ny;
-               msg.cameraid2 = nt;
+               msg.p2.x = nx;
+               msg.p2.y = ny;
                msg.tagid2 = nid;
                //std::cout << "tagid: " << msg.tagid;
                std::cout << "Tag: " << id << " x: " << x << " y: " << y << " heading: " << t << std::endl;

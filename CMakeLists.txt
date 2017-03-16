@@ -6,9 +6,8 @@ project(gulliview_server)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  rospy
   std_msgs
-  message_generation
+custom_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -45,11 +44,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
- add_message_files(
-   FILES
-   Pos.msg
-   Num.msg
- )
+# add_message_files(
+#   FILES
+#   Pos.msg
+#   Num.msg
+# )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -66,10 +65,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
- generate_messages(
-   DEPENDENCIES
-   std_msgs
- )
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs
+# )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -103,7 +102,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS
 #  LIBRARIES gulliview_server
-  CATKIN_DEPENDS roscpp rospy std_msgs
+  CATKIN_DEPENDS roscpp std_msgs
 #  DEPENDS system_lib
 )
 
@@ -196,5 +195,5 @@ include_directories(
 #    link_directories(${Boost_LIBRARY_DIR})
 #endif()
 
-add_executable(gulliview src/gulliview_server.cpp)
+add_executable(gulliview scripts/gulliview_server.cpp)
 target_link_libraries(gulliview ${catkin_LIBRARIES})
