@@ -17,7 +17,6 @@ class GatherDataPoints:
     
     
     def gvPositionsHandler(self, data):
-        print "got position"
         p1 = (data.p1.x, data.p1.y)
         p2 = (data.p2.x, data.p2.y)
         tagid1 = data.tagid1
@@ -36,6 +35,7 @@ class GatherDataPoints:
             if self.last_point == None:
                 print "last_point is None"
             else:
+                print "appending: " + str(self.last_point)
                 with open(self.filename, 'a') as f:
                     f.write(str(self.last_point[0]) + " " + str(self.last_point[1]) + '\n')
         
