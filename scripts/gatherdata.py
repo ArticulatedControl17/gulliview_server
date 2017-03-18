@@ -9,10 +9,10 @@ class GatherDataPoints:
         rospy.init_node('gather_data', anonymous=False)
         
         self.last_point = None
+        self.filename = raw_input("input file name: ")
         
         rospy.Subscriber('gv_positions', GulliViewPositions, self.gvPositionsHandler)
         
-        self.filename = raw_input("input file name: ")
     
     
     
@@ -23,6 +23,8 @@ class GatherDataPoints:
         tagid2 = data.tagid2
         cameraid = data.cameraid
         
+        print cameraid
+        
         self.last_point = p1
         
         
@@ -32,6 +34,9 @@ class GatherDataPoints:
         
         while True:
             raw_input("press enter to get data point")
+            
+            if rospy.is_shutdown():
+                break
             if self.last_point == None:
                 print "last_point is None"
             else:
