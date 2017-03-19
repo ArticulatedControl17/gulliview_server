@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import rospy
 from custom_msgs.msg import *
+
+from sensor_msgs.msg import Joy
 import time
 
 
@@ -12,9 +14,25 @@ class GatherDataPoints:
         self.filename = raw_input("input file name: ")
         
         rospy.Subscriber('gv_positions', GulliViewPositions, self.gvPositionsHandler)
+        rospy.Subscriber('joy', Joy, self.joyHandler)
         
+        self.prev_x = 0
     
     
+    def writeToFile(self):
+        if self.last_point == None:
+            print "last_point is None"
+        else:
+            print "appending: " + str(self.last_point)
+            with open(self.filename, 'a') as f:
+                f.write(str(self.last_point[0]) + " " + str(self.last_point[1]) + '\n')
+    
+    def joyHandler(self, data):
+        if data.buttons[14] == 1.0 and self.prev_x == 0.0:
+            self.writeToFile()
+            
+        self.prev_x = data.buttons[14]
+            
     
     def gvPositionsHandler(self, data):
         p1 = (data.p1.x, data.p1.y)
@@ -37,12 +55,7 @@ class GatherDataPoints:
             
             if rospy.is_shutdown():
                 break
-            if self.last_point == None:
-                print "last_point is None"
-            else:
-                print "appending: " + str(self.last_point)
-                with open(self.filename, 'a') as f:
-                    f.write(str(self.last_point[0]) + " " + str(self.last_point[1]) + '\n')
+            self.writeToFile()
         
 
 
